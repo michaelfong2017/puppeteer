@@ -21,6 +21,7 @@ const launch = async (username, password, ip, port) => {
     const browser = await puppeteer.launch({
         args: [
             `--proxy-server=${newProxyUrl}`,
+            // `--proxy-server=http://${ip}:${port}`,
             '--start-maximized',
         ],
         defaultViewport: null,
@@ -31,8 +32,10 @@ const launch = async (username, password, ip, port) => {
 
     // Do your magic here...
     const page = await browser.newPage();
+    await page.authenticate({username: username, password: password});
     await page.goto('https://www.google.com');
 
+    // await page.setExtraHTTPHeaders({ referer: "https://premier.hkticketing.com/" })
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36', {
         brands: [
             {
@@ -89,6 +92,10 @@ const launch = async (username, password, ip, port) => {
     // ];
     // await page.setCookie(...cookies);
 
+    // await page.goto("https://premier.hkticketing.com/", {
+    //     referer: "https://premier.hkticketing.com/"
+    // })
+
     page.on('console', msg => console.log('PAGE LOG:', msg.text()));
 
     await page.evaluate(() => {
@@ -106,7 +113,8 @@ const launch = async (username, password, ip, port) => {
 }
 
 (async () => {
-    launch("michaelfong2017", "michaelfong1998", "18.163.122.109", "8888");
+    launch("michaelfong2017", "michaelfong1998", "127.0.0.1", "8888");
+    // launch("michaelfong2017", "michaelfong1998", "18.163.196.82", "443");
     // launch("michaelfong2017", "michaelfong1998", "54.146.188.110", "8888");
 })();
 
